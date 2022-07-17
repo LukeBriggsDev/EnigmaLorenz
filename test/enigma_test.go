@@ -34,3 +34,19 @@ func TestRotorTranslateReverseOffset(t *testing.T) {
 		}
 	}
 }
+
+func TestMachineEncrypt(t *testing.T) {
+	I, II, III, _, UKW_B := enigma.GenerateRotors()
+	machine := enigma.Enigma{
+		LeftRotor:   III,
+		CenterRotor: II,
+		RightRotor:  I,
+		Reflector:   UKW_B,
+	}
+	plaintext := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+	expectedCipher := "FTZMGISXIPJWGDNJJCOQTYRIGDMXFIESRWZGTOIUIEKKDCSHTPYOEPVXNHVRWWESFRUXDGWOZDMNKIZWNCZDUCOBLTUYHDZGO"
+	cipher := machine.Encrypt(plaintext)
+	if cipher != expectedCipher {
+		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
+	}
+}
