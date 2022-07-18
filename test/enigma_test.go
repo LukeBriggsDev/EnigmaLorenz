@@ -50,3 +50,17 @@ func TestMachineEncrypt(t *testing.T) {
 		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
 	}
 }
+
+func TestPlugboard(t *testing.T) {
+	plugboard := enigma.NewPlugboard()
+	plugboard.AddPlug('A', 'B')
+	result := plugboard.Translate('A')
+	if result != 'B' {
+		t.Errorf("A should translate to B, instead A becomes %c", result)
+	}
+	plugboard.RemovePlug('A')
+	result = plugboard.Translate('A')
+	if result != 'A' {
+		t.Errorf("A should become A with empty plugboard, instead A becomes %c", result)
+	}
+}

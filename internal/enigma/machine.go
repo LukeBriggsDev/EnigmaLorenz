@@ -5,11 +5,13 @@ type Enigma struct {
 	CenterRotor Rotor
 	RightRotor  Rotor
 	Reflector   Rotor
+	Plugs       Plugboard
 }
 
 func (machine *Enigma) Encrypt(plaintext string) string {
 	var cipher []byte
 	for _, chr := range []byte(plaintext) {
+		chr = machine.Plugs.Translate(chr)
 		chr = chr - byte('A')
 		if machine.CenterRotor.AtNotch() {
 			machine.LeftRotor.Rotate()
@@ -30,9 +32,9 @@ func (machine *Enigma) Encrypt(plaintext string) string {
 		}
 
 		chr = chr + byte('A')
-		if chr == 'U' {
-			print("b")
-		}
+
+		chr = machine.Plugs.Translate(chr)
+
 		cipher = append(cipher, chr)
 
 	}
