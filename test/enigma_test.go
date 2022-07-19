@@ -24,8 +24,8 @@ func TestRotorTranslateReverseNoOffset(t *testing.T) {
 func TestRotorTranslateReverseOffset(t *testing.T) {
 	I, _, _, _, _ := enigma.GenerateRotors()
 	for chr := range "ABCDEFGHIJKLMNOPQRSTUVWXYZ" {
-		for i := 0; i < 26; i++ {
-			I.ShownPos = byte(i)
+		for i := 1; i < 27; i++ {
+			I.SetShownPos(byte(i))
 			cipher := I.Translate(byte(chr))
 			plain := I.TranslateReverse(cipher)
 			if byte(chr) != plain {
@@ -45,7 +45,7 @@ func TestMachineEncrypt(t *testing.T) {
 	}
 	plaintext := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	expectedCipher := "FTZMGISXIPJWGDNJJCOQTYRIGDMXFIESRWZGTOIUIEKKDCSHTPYOEPVXNHVRWWESFRUXDGWOZDMNKIZWNCZDUCOBLTUYHDZGO"
-	cipher := machine.Encrypt(plaintext)
+	cipher, _ := machine.Encrypt(plaintext)
 	if cipher != expectedCipher {
 		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
 	}
@@ -53,9 +53,9 @@ func TestMachineEncrypt(t *testing.T) {
 
 func TestMachineEncryptRing(t *testing.T) {
 	I, II, III, _, UKW_B := enigma.GenerateRotors()
-	I.RingSetting = 1
-	II.RingSetting = 3
-	III.RingSetting = 6
+	I.SetRingSetting(1)
+	II.SetRingSetting(3)
+	III.SetRingSetting(6)
 	machine := enigma.Enigma{
 		LeftRotor:   III,
 		CenterRotor: II,
@@ -64,7 +64,7 @@ func TestMachineEncryptRing(t *testing.T) {
 	}
 	plaintext := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	expectedCipher := "MBPEKFULTQTRXBRUSTTUDGKWSTJSGJVYWBIGVUEJBKHOLKENMWVUXIQJZXQWNCZMERMKRMRDGYQEREZCTPWTJXQLEEKKDCZXX"
-	cipher := machine.Encrypt(plaintext)
+	cipher, _ := machine.Encrypt(plaintext)
 	if cipher != expectedCipher {
 		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
 	}
@@ -81,5 +81,29 @@ func TestPlugboard(t *testing.T) {
 	result = plugboard.Translate('A')
 	if result != 'A' {
 		t.Errorf("A should become A with empty plugboard, instead A becomes %c", result)
+	}
+}
+
+func TestMachineEncryptRingPlugboard(t *testing.T) {
+	I, II, III, _, UKW_B := enigma.GenerateRotors()
+	I.SetRingSetting(6)
+	II.SetRingSetting(3)
+	III.SetRingSetting(1)
+	machine := enigma.Enigma{
+		LeftRotor:   III,
+		CenterRotor: II,
+		RightRotor:  I,
+		Reflector:   UKW_B,
+		Plugs:       enigma.NewPlugboard(),
+	}
+	plug := "STEADING"
+	for i := 0; i < len(plug); i += 2 {
+		machine.Plugs.AddPlug(plug[i], plug[i+1])
+	}
+	plaintext := "QWERTYUIOPASDFGHJKLZXCVBNMMNBVCXZLKJHGFDSAPOIUYTREWQQWERTYUIOPASDFGHJKLZXCVBNMMNBVCXZLKJHGFDSAPOIUYTREWQ"
+	expectedCipher := "ALOMPLZEIIRAHXECCABOCJAHYUAUQKGQJXEQUVPIZSBLWPQFOPEWGFUTAWRVYSSIWTIIWLFKAUUZYWYUFPIOEOHEQSCCJDXBQISSCKSW"
+	cipher, _ := machine.Encrypt(plaintext)
+	if cipher != expectedCipher {
+		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
 	}
 }

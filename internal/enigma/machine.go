@@ -1,5 +1,7 @@
 package enigma
 
+import "errors"
+
 type Enigma struct {
 	LeftRotor   Rotor
 	CenterRotor Rotor
@@ -8,7 +10,21 @@ type Enigma struct {
 	Plugs       Plugboard
 }
 
-func (machine *Enigma) Encrypt(plaintext string) string {
+func validChars(text string) bool {
+	for _, chr := range text {
+		if chr < 'A' || chr > 'Z' {
+			return false
+		}
+	}
+	return true
+}
+
+func (machine *Enigma) Encrypt(plaintext string) (string, error) {
+
+	if !validChars(plaintext) {
+		return "", errors.New("enigma input must be capitalized ascii letters only")
+	}
+
 	var cipher []byte
 	for _, chr := range []byte(plaintext) {
 		chr = machine.Plugs.Translate(chr)
@@ -38,5 +54,5 @@ func (machine *Enigma) Encrypt(plaintext string) string {
 		cipher = append(cipher, chr)
 
 	}
-	return string(cipher)
+	return string(cipher), nil
 }
