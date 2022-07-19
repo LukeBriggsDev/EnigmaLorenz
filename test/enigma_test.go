@@ -4,7 +4,8 @@ import "testing"
 import "EnigmaLorenz/internal/enigma"
 
 func TestRotorTranslateNoOffset(t *testing.T) {
-	I, _, _, _, _ := enigma.GenerateRotors()
+	rotorSet := enigma.GenerateRotors()
+	I := rotorSet.I
 	cipher := I.Translate(0)
 	if cipher != 4 {
 		t.Errorf("Rotor %s. Expected: 0 -> 4. Got: A -> %d", I.Name, cipher)
@@ -13,7 +14,8 @@ func TestRotorTranslateNoOffset(t *testing.T) {
 }
 
 func TestRotorTranslateReverseNoOffset(t *testing.T) {
-	I, _, _, _, _ := enigma.GenerateRotors()
+	rotorSet := enigma.GenerateRotors()
+	I := rotorSet.I
 	cipher := I.Translate(0)
 	plain := I.TranslateReverse(cipher)
 	if plain != 0 {
@@ -22,7 +24,8 @@ func TestRotorTranslateReverseNoOffset(t *testing.T) {
 }
 
 func TestRotorTranslateReverseOffset(t *testing.T) {
-	I, _, _, _, _ := enigma.GenerateRotors()
+	rotorSet := enigma.GenerateRotors()
+	I := rotorSet.I
 	for chr := range "ABCDEFGHIJKLMNOPQRSTUVWXYZ" {
 		for i := 1; i < 27; i++ {
 			I.SetShownPos(byte(i))
@@ -36,7 +39,11 @@ func TestRotorTranslateReverseOffset(t *testing.T) {
 }
 
 func TestMachineEncrypt(t *testing.T) {
-	I, II, III, _, UKW_B := enigma.GenerateRotors()
+	rotorSet := enigma.GenerateRotors()
+	I := rotorSet.I
+	II := rotorSet.II
+	III := rotorSet.III
+	UKW_B := rotorSet.UKW_B
 	machine := enigma.Enigma{
 		LeftRotor:   III,
 		CenterRotor: II,
@@ -52,7 +59,11 @@ func TestMachineEncrypt(t *testing.T) {
 }
 
 func TestMachineEncryptRing(t *testing.T) {
-	I, II, III, _, UKW_B := enigma.GenerateRotors()
+	rotorSet := enigma.GenerateRotors()
+	I := rotorSet.I
+	II := rotorSet.II
+	III := rotorSet.III
+	UKW_B := rotorSet.UKW_B
 	I.SetRingSetting(1)
 	II.SetRingSetting(3)
 	III.SetRingSetting(6)
@@ -85,7 +96,11 @@ func TestPlugboard(t *testing.T) {
 }
 
 func TestMachineEncryptRingPlugboard(t *testing.T) {
-	I, II, III, _, UKW_B := enigma.GenerateRotors()
+	rotorSet := enigma.GenerateRotors()
+	I := rotorSet.I
+	II := rotorSet.II
+	III := rotorSet.III
+	UKW_B := rotorSet.UKW_B
 	I.SetRingSetting(6)
 	II.SetRingSetting(3)
 	III.SetRingSetting(1)
