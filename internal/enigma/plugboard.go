@@ -1,5 +1,7 @@
 package enigma
 
+import "log"
+
 type Plugboard struct {
 	state map[byte]byte
 }
@@ -11,6 +13,9 @@ func NewPlugboard() Plugboard {
 }
 
 func (p *Plugboard) AddPlug(letter1 byte, letter2 byte) {
+	if !(validChars(string(letter1)) && validChars(string(letter2))) {
+		log.Fatal("Invalid characters given to plugboard, must be A-Z")
+	}
 	p.state[letter1] = letter2
 	p.state[letter2] = letter1
 }
