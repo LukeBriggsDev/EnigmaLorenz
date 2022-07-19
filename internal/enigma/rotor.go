@@ -11,35 +11,44 @@ func indexOf(needle byte, haystack []byte) (byte, error) {
 	return 0, errors.New("Item not found in list")
 }
 
+func negMod(a int, n int) int {
+	return (a%n + n) % n
+}
+
 type Rotor struct {
 	Name         string
 	Alphabet     []byte
-	CurrentPos   byte
+	ShownPos     byte
 	NotchList    []byte
 	TurnoverList []byte
+	RingSetting  byte
+}
+
+func (r *Rotor) NormalizedPos() byte {
+	return byte(negMod(int(r.ShownPos)-int(r.RingSetting), len(r.Alphabet)))
 }
 
 func (r *Rotor) AtNotch() bool {
-	_, err := indexOf(r.CurrentPos, r.TurnoverList)
+	_, err := indexOf(r.ShownPos, r.TurnoverList)
 	return err == nil
 }
 
 func (r *Rotor) Rotate() {
-	r.CurrentPos += 1
-	r.CurrentPos %= byte(len(r.Alphabet))
+	r.ShownPos += 1
+	r.ShownPos %= byte(len(r.Alphabet))
 }
 
 func (r Rotor) Translate(plain byte) byte {
 
-	shiftedPlain := (plain + r.CurrentPos) % byte(len(r.Alphabet))
-	shiftedCipher := ((int(r.Alphabet[shiftedPlain])-int(r.CurrentPos))%len(r.Alphabet) + len(r.Alphabet)) % len(r.Alphabet)
+	shiftedPlain := (plain + r.NormalizedPos()) % byte(len(r.Alphabet)) // Shift by rotor and ring position
+	shiftedCipher := negMod(int(r.Alphabet[shiftedPlain])-int(r.NormalizedPos()), len(r.Alphabet))
 	return byte(shiftedCipher)
 }
 
 func (r Rotor) TranslateReverse(cipher byte) byte {
-	unshiftedCipher := (cipher + r.CurrentPos) % byte(len(r.Alphabet))
+	unshiftedCipher := (cipher + r.NormalizedPos()) % byte(len(r.Alphabet))
 	unshiftedPlain, _ := indexOf(unshiftedCipher, r.Alphabet)
-	shiftedPlain := ((int(unshiftedPlain)-int(r.CurrentPos))%len(r.Alphabet) + len(r.Alphabet)) % len(r.Alphabet)
+	shiftedPlain := negMod(int(unshiftedPlain)-int(r.NormalizedPos()), len(r.Alphabet))
 	return byte(shiftedPlain)
 }
 
@@ -47,7 +56,7 @@ func GenerateRotors() (I Rotor, II Rotor, III Rotor, UKW_A Rotor, UKW_B Rotor) {
 	I = Rotor{
 		Name:         "I",
 		Alphabet:     []byte{4, 10, 12, 5, 11, 6, 3, 16, 21, 25, 13, 19, 14, 22, 24, 7, 23, 20, 18, 15, 0, 8, 1, 17, 2, 9},
-		CurrentPos:   0,
+		ShownPos:     0,
 		NotchList:    []byte{'Y'},
 		TurnoverList: []byte{16},
 	}
@@ -55,7 +64,7 @@ func GenerateRotors() (I Rotor, II Rotor, III Rotor, UKW_A Rotor, UKW_B Rotor) {
 	II = Rotor{
 		Name:         "II",
 		Alphabet:     []byte{0, 9, 3, 10, 18, 8, 17, 20, 23, 1, 11, 7, 22, 19, 12, 2, 16, 6, 25, 13, 15, 24, 5, 21, 14, 4},
-		CurrentPos:   0,
+		ShownPos:     0,
 		NotchList:    []byte{'M'},
 		TurnoverList: []byte{4},
 	}
@@ -63,7 +72,7 @@ func GenerateRotors() (I Rotor, II Rotor, III Rotor, UKW_A Rotor, UKW_B Rotor) {
 	III = Rotor{
 		Name:         "III",
 		Alphabet:     []byte{1, 3, 5, 7, 9, 11, 2, 15, 17, 19, 23, 21, 25, 13, 24, 4, 8, 22, 6, 0, 10, 12, 20, 18, 16, 14},
-		CurrentPos:   0,
+		ShownPos:     0,
 		NotchList:    []byte{'D'},
 		TurnoverList: []byte{21},
 	}

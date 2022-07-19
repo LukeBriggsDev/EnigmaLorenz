@@ -6,9 +6,9 @@ import (
 
 func main() {
 	I, II, III, _, UKW_B := enigma.GenerateRotors()
-	I.CurrentPos = 6
-	II.CurrentPos = 1
-	III.CurrentPos = 0
+	I.ShownPos = 6
+	II.ShownPos = 1
+	III.ShownPos = 0
 	plugs := enigma.Plugboard{}
 	plugs.AddPlug('R', 'B')
 	plugs.AddPlug('W', 'S')
