@@ -52,9 +52,27 @@ func TestMachineEncrypt(t *testing.T) {
 	}
 	plaintext := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	expectedCipher := "FTZMGISXIPJWGDNJJCOQTYRIGDMXFIESRWZGTOIUIEKKDCSHTPYOEPVXNHVRWWESFRUXDGWOZDMNKIZWNCZDUCOBLTUYHDZGO"
-	cipher, _ := machine.Encrypt(plaintext)
+	cipher, _ := machine.Encrypt(plaintext, false)
 	if cipher != expectedCipher {
 		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
+	}
+}
+
+func TestMachineEncryptFourRotor(t *testing.T) {
+	rotorSet := enigma.GenerateRotors()
+	UKW_B := rotorSet.UKW_B
+	machine := enigma.Enigma{
+		LeftRotor:   rotorSet.III,
+		CenterRotor: rotorSet.II,
+		RightRotor:  rotorSet.I,
+		FourthRotor: rotorSet.Beta,
+		Reflector:   rotorSet.UKW_b,
+	}
+	plaintext := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+	expectedCipher := "FTZMGISXIPJWGDNJJCOQTYRIGDMXFIESRWZGTOIUIEKKDCSHTPYOEPVXNHVRWWESFRUXDGWOZDMNKIZWNCZDUCOBLTUYHDZGO"
+	cipher, _ := machine.Encrypt(plaintext, true)
+	if cipher != expectedCipher {
+		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, rotorSet.III.Name, rotorSet.II.Name, rotorSet.I.Name, plaintext, expectedCipher, cipher)
 	}
 }
 
@@ -75,7 +93,7 @@ func TestMachineEncryptRing(t *testing.T) {
 	}
 	plaintext := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	expectedCipher := "MBPEKFULTQTRXBRUSTTUDGKWSTJSGJVYWBIGVUEJBKHOLKENMWVUXIQJZXQWNCZMERMKRMRDGYQEREZCTPWTJXQLEEKKDCZXX"
-	cipher, _ := machine.Encrypt(plaintext)
+	cipher, _ := machine.Encrypt(plaintext, false)
 	if cipher != expectedCipher {
 		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
 	}
@@ -117,7 +135,7 @@ func TestMachineEncryptRingPlugboard(t *testing.T) {
 	}
 	plaintext := "QWERTYUIOPASDFGHJKLZXCVBNMMNBVCXZLKJHGFDSAPOIUYTREWQQWERTYUIOPASDFGHJKLZXCVBNMMNBVCXZLKJHGFDSAPOIUYTREWQ"
 	expectedCipher := "ALOMPLZEIIRAHXECCABOCJAHYUAUQKGQJXEQUVPIZSBLWPQFOPEWGFUTAWRVYSSIWTIIWLFKAUUZYWYUFPIOEOHEQSCCJDXBQISSCKSW"
-	cipher, _ := machine.Encrypt(plaintext)
+	cipher, _ := machine.Encrypt(plaintext, false)
 	if cipher != expectedCipher {
 		t.Errorf("Machine: %s, %s, %s, %s.\nPlaintext:\t\t\t%s.\nExpected Cipher:\t%s.\nActual Cipher:\t\t%s.\n", UKW_B.Name, III.Name, II.Name, I.Name, plaintext, expectedCipher, cipher)
 	}

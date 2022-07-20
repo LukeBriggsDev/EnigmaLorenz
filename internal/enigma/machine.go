@@ -1,11 +1,14 @@
 package enigma
 
-import "errors"
+import (
+	"errors"
+)
 
 type Enigma struct {
 	LeftRotor   Rotor
 	CenterRotor Rotor
 	RightRotor  Rotor
+	FourthRotor Rotor
 	Reflector   Rotor
 	Plugs       Plugboard
 }
@@ -19,8 +22,7 @@ func validChars(text string) bool {
 	return true
 }
 
-func (machine *Enigma) Encrypt(plaintext string) (string, error) {
-
+func (machine *Enigma) Encrypt(plaintext string, useFourthRotor bool) (string, error) {
 	if !validChars(plaintext) {
 		return "", errors.New("enigma input must be capitalized ascii letters only")
 	}
@@ -39,12 +41,19 @@ func (machine *Enigma) Encrypt(plaintext string) (string, error) {
 		}
 		machine.RightRotor.Rotate()
 
-		for _, rotor := range []Rotor{machine.RightRotor, machine.CenterRotor, machine.LeftRotor, machine.Reflector} {
+		path := []Rotor{machine.RightRotor, machine.CenterRotor, machine.LeftRotor}
+		if useFourthRotor {
+			path = append(path, machine.FourthRotor)
+		}
+
+		for _, rotor := range path {
 			chr = rotor.Translate(chr)
 		}
 
-		for _, rotor := range []Rotor{machine.LeftRotor, machine.CenterRotor, machine.RightRotor} {
-			chr = rotor.TranslateReverse(chr)
+		chr = machine.Reflector.Translate(chr)
+
+		for rotorIndex := len(path) - 1; rotorIndex >= 0; rotorIndex-- {
+			chr = path[rotorIndex].TranslateReverse(chr)
 		}
 
 		chr = chr + byte('A')
