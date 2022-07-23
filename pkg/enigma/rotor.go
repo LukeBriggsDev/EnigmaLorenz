@@ -13,7 +13,7 @@ func indexOf(needle byte, haystack []byte) (byte, error) {
 			return byte(idx), nil
 		}
 	}
-	return 0, errors.New("Item not found in list")
+	return 0, errors.New("item not found in list")
 }
 
 // negMod is a helper function to have a mod n produce a positive result even if a is negative.
@@ -70,7 +70,7 @@ func (r *Rotor) GetShownPos() byte {
 //
 // Errors
 //
-// A fatal error will occur if a value less then 0 or greater than 25 is passed as a parameter.
+// A fatal error will occur if a value less than 0 or greater than 25 is passed as a parameter.
 func (r *Rotor) SetRingSetting(offset byte) {
 	if offset < 0 || offset > 25 {
 		log.Fatal("Rotor position must be set to value between 0 and 25")
