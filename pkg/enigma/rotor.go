@@ -1,3 +1,4 @@
+// Package enigma implements the necessary functions to simulate all Enigma machines from Enigma 1 to Enigma M4.
 package enigma
 
 import (
@@ -5,6 +6,7 @@ import (
 	"log"
 )
 
+// indexOf is a helper function to find the location of a byte in a byte slice
 func indexOf(needle byte, haystack []byte) (byte, error) {
 	for idx, val := range haystack {
 		if val == needle {
@@ -14,10 +16,27 @@ func indexOf(needle byte, haystack []byte) (byte, error) {
 	return 0, errors.New("Item not found in list")
 }
 
+// negMod is a helper function to have a mod n produce a positive result even if a is negative.
 func negMod(a int, n int) int {
 	return (a%n + n) % n
 }
 
+// A Rotor contains all the information necessary to translate an input connection to an output connection.
+// The Name of the rotor contains the string representation.
+// In the standard RotorSet this is in the form of either a Roman numeral or a Greek letter.
+//
+// Wires is a list of mappings of the input to the output.
+// The index of the list can be seen as the input and the value can be seen as the output.
+// e.g.
+//    | Index | 0(A)  1(B)  2(C) 3(D)  4(E) 5(F) 6(G)  7(H)  8(I)  9(J) 10(K) 11(L) 12(M) 13(N) 14(O) 15(P) 16(Q) 17(R) 18(S) 19(T) 20(U) 21(V) 22(W) 23(X) 24(Y) 25(Z)
+//    | Value | 4(E) 10(K) 12(M) 5(F) 11(L) 6(G) 3(D) 16(Q) 21(V) 25(Z) 13(N) 19(T) 14(O) 22(W) 24(Y)  7(H) 23(X) 20(U) 18(S) 15(P)  0(A)  8(I)  1(B) 17(R)  2(C)  9(J)
+//
+// The wiring for the standard RotorSet was acquired from
+// https://www.cryptomuseum.com/crypto/enigma/m4/index.htm#Wiring
+//
+// TurnoverList contains the list of values that will be the current value when notch is aligned with the mechanism.
+// When a value in the turnover list is the current position,
+// the Enigma Encrypt function will step the rotor to its left on the next rotation.
 type Rotor struct {
 	Name         string
 	Wires        []byte
@@ -26,6 +45,12 @@ type Rotor struct {
 	ringSetting  byte
 }
 
+// SetShownPos is analogous to setting the rotor position by changing the letter/number shown in the window.
+// The position can be any number between 1 and 26 inclusively.
+//
+// Errors
+//
+// A fatal error will occur if a value less than 0 or more than 26 is passed in.
 func (r *Rotor) SetShownPos(pos byte) {
 	if pos < 1 || pos > 26 {
 		log.Fatal("Rotor position must be set to value between 1 and 26")
@@ -33,14 +58,19 @@ func (r *Rotor) SetShownPos(pos byte) {
 	r.shownPos = pos - 1
 }
 
+// GetShownPos will return the value that would be showing through the Enigma window.
+// The value returned will be a value between 1 and 26 inclusively.
 func (r *Rotor) GetShownPos() byte {
 	return r.shownPos + 1
 }
 
-func (r *Rotor) GetRingSetting() byte {
-	return r.ringSetting
-}
-
+// SetRingSetting is equivalent to the ring setting on a real Enigma.
+// It provides an offset between the input wiring and output wiring, achieved by rotating one side of the rotor wiring.
+// The offset can be any number between 0 and 25 inclusively.
+//
+// Errors
+//
+// A fatal error will occur if a value less then 0 or greater than 25 is passed as a parameter.
 func (r *Rotor) SetRingSetting(offset byte) {
 	if offset < 0 || offset > 25 {
 		log.Fatal("Rotor position must be set to value between 0 and 25")
@@ -48,34 +78,52 @@ func (r *Rotor) SetRingSetting(offset byte) {
 	r.ringSetting = offset
 }
 
-func (r *Rotor) NormalizedPos() byte {
+// GetRingSetting will return the current ring setting.
+func (r *Rotor) GetRingSetting() byte {
+	return r.ringSetting
+}
+
+func (r *Rotor) normalizedPos() byte {
 	return byte(negMod(int(r.shownPos)-int(r.ringSetting), len(r.Wires)))
 }
 
+// AtNotch will return whether the rotor is currently in the position where its notch aligns with the pawl.
 func (r *Rotor) AtNotch() bool {
 	_, err := indexOf(r.shownPos, r.TurnoverList)
 	return err == nil
 }
 
+// Rotate will rotate the rotor counterclockwise by one step.
 func (r *Rotor) Rotate() {
 	r.shownPos += 1
 	r.shownPos %= byte(len(r.Wires))
 }
 
+// Translate will return the output signal from a given input signal.
 func (r Rotor) Translate(plain byte) byte {
 
-	shiftedPlain := (plain + r.NormalizedPos()) % byte(len(r.Wires)) // Shift by rotor and ring position
-	shiftedCipher := negMod(int(r.Wires[shiftedPlain])-int(r.NormalizedPos()), len(r.Wires))
+	shiftedPlain := (plain + r.normalizedPos()) % byte(len(r.Wires)) // Shift by rotor and ring position.
+	shiftedCipher := negMod(int(r.Wires[shiftedPlain])-int(r.normalizedPos()), len(r.Wires))
 	return byte(shiftedCipher)
 }
 
+// TranslateReverse will return the input signal for a given output signal.
 func (r Rotor) TranslateReverse(cipher byte) byte {
-	unshiftedCipher := (cipher + r.NormalizedPos()) % byte(len(r.Wires))
+	unshiftedCipher := (cipher + r.normalizedPos()) % byte(len(r.Wires))
 	unshiftedPlain, _ := indexOf(unshiftedCipher, r.Wires)
-	shiftedPlain := negMod(int(unshiftedPlain)-int(r.NormalizedPos()), len(r.Wires))
+	shiftedPlain := negMod(int(unshiftedPlain)-int(r.normalizedPos()), len(r.Wires))
 	return byte(shiftedPlain)
 }
 
+// RotorSet contains all the standard rotors and reflectors that were available from Enigma 1 to M4 Enigma.
+// The rotors were gathered from [Crypto Museum]: https://www.cryptomuseum.com/crypto/enigma/m4/index.htm#wiring
+//
+// Further Notes
+//
+// 4 rotor enigma only allowed for a specific set of rotors to be used as the 4th rotor.
+// These rotors are Beta and Gamma.
+// UKW_b and UKW_c were designed so that when UKW_b and Beta, or UKW_c and Gamma were used together in default positions,
+// they were equivalent to UKW_B and UKW_C respectively
 type RotorSet struct {
 	I     Rotor
 	II    Rotor
@@ -94,6 +142,7 @@ type RotorSet struct {
 	Gamma Rotor
 }
 
+// GenerateRotors returns the standard RotorSet
 func GenerateRotors() (set RotorSet) {
 	I := Rotor{
 		Name:         "I",

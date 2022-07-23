@@ -1,7 +1,7 @@
 package test
 
 import "testing"
-import "EnigmaLorenz/internal/enigma"
+import "EnigmaLorenz/pkg/enigma"
 
 func TestRotorTranslateNoOffset(t *testing.T) {
 	rotorSet := enigma.GenerateRotors()

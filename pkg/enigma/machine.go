@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+// An Enigma is the representation of the Plugboard and the list of Rotors associated with the machine.
+// A FourthRotor is optional when Encrypt is used with the useFourthRotor flag set to false
 type Enigma struct {
 	LeftRotor   Rotor
 	CenterRotor Rotor
@@ -13,6 +15,7 @@ type Enigma struct {
 	Plugs       Plugboard
 }
 
+// validChars takes a string and returns whether the string only contains ASCII characters in the range A-Z.
 func validChars(text string) bool {
 	for _, chr := range text {
 		if chr < 'A' || chr > 'Z' {
@@ -22,6 +25,12 @@ func validChars(text string) bool {
 	return true
 }
 
+// Encrypt enciphers a plaintext string using the Enigma Rotor and Plugboard.
+// useForthRotor can be used to provide support for M4 Enigma.
+//
+// Errors
+//
+// If the encryption cannot complete due to invalid characters then a non-fatal error is returned.
 func (machine *Enigma) Encrypt(plaintext string, useFourthRotor bool) (string, error) {
 	if !validChars(plaintext) {
 		return "", errors.New("enigma input must be capitalized ascii letters only")
