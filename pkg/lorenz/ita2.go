@@ -8,7 +8,10 @@ type bimap struct {
 }
 
 func bimapFromSlice(s []byte) bimap {
-	m := bimap{}
+	m := bimap{
+		forwardMap: make(map[byte]byte),
+		reverseMap: make(map[byte]byte),
+	}
 	for idx, val := range s {
 		m.Add(byte(idx), val)
 	}
@@ -35,7 +38,7 @@ type ITA2 struct {
 	figureAlphabet bimap
 }
 
-func newITA2() ITA2 {
+func NewITA2() ITA2 {
 	letter := []byte{
 		'\x00', // NULL
 		'E',
@@ -64,11 +67,11 @@ func newITA2() ITA2 {
 		'O',
 		'B',
 		'G',
-		'\x0F', // Shift In
+		'\x1B', // Shift In
 		'M',
 		'X',
 		'V',
-		'\x0E', // Shift Out
+		'\x1F', // Shift Out
 	}
 
 	figure := []byte{
@@ -99,11 +102,11 @@ func newITA2() ITA2 {
 		'9',
 		'?',
 		'&',
-		'\x0F', // Shift In
+		'\x1B', // Shift In
 		'.',
 		'/',
 		';',
-		'\x0E', // Shift Out
+		'\x1F', // Shift Out
 	}
 
 	ITA := ITA2{
@@ -125,13 +128,13 @@ func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
 				return []byte(""), errors.New("invalid characters in input string")
 			}
 			if inLetterShift {
-				encoded = append(encoded, 0x0E)
+				encoded = append(encoded, 0x1B)
 				inLetterShift = !inLetterShift
 			}
 			encoded = append(encoded, figure)
 		} else {
 			if !inLetterShift {
-				encoded = append(encoded, 0x0F)
+				encoded = append(encoded, 0x1F)
 				inLetterShift = !inLetterShift
 			}
 			encoded = append(encoded, letter)
