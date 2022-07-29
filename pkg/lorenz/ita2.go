@@ -142,3 +142,35 @@ func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
 	}
 	return encoded, nil
 }
+
+func (alphabet *ITA2) ITA2ToAscii(b []byte) (string, error) {
+	decoded := ""
+	inLetterShift := true
+	for _, char := range b {
+		if char == 0x1B {
+			inLetterShift = false
+			continue
+		} else if char == 0x1F {
+			inLetterShift = true
+			continue
+		}
+
+		if inLetterShift {
+			letter, letterExists := alphabet.letterAlphabet.GetASCII(char)
+			if !letterExists {
+				return "", errors.New("incorrect character sequence")
+			}
+			decoded += string(letter)
+		} else {
+			figure, figureExists := alphabet.figureAlphabet.GetASCII(char)
+			if !figureExists {
+				return "", errors.New("incorrect character sequence")
+			}
+			decoded += string(figure)
+		}
+
+	}
+
+	return decoded, nil
+
+}
