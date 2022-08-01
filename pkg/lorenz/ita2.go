@@ -38,7 +38,86 @@ type ITA2 struct {
 	figureAlphabet bimap
 }
 
-func NewITA2() ITA2 {
+func NewITA2LSB() ITA2 {
+	letter := []byte{
+		'\x00', // NULL
+		'T',
+		'\x0D', // CR
+		'O',
+		' ',
+		'H',
+		'N',
+		'M',
+		'\x0A', // LF
+		'L',
+		'R',
+		'G',
+		'I',
+		'P',
+		'C',
+		'V',
+		'E',
+		'Z',
+		'D',
+		'B',
+		'S',
+		'Y',
+		'F',
+		'X',
+		'A',
+		'W',
+		'J',
+		'\x1B', // Shift In
+		'U',
+		'Q',
+		'K',
+		'\x1F', // Shift Out
+	}
+
+	figure := []byte{
+		'\x00', // NULL
+		'5',
+		'\x0D', // LF
+		'9',
+		' ',
+		'£',
+		',',
+		'.',
+		'\x0A', // CR
+		')',
+		'4',
+		'&',
+		'8',
+		'0',
+		':',
+		'=',
+		'3',
+		'+',
+		'\x05', // Enquiry
+		'?',
+		'\'',
+		'6',
+		'!',
+		'/',
+		'-',
+		'2',
+		'\x07', // Bell
+		'\x1B', // Shift In
+		'7',
+		'1',
+		'(',
+		'\x1F', // Shift Out
+	}
+
+	ITA := ITA2{
+		letterAlphabet: bimapFromSlice(letter),
+		figureAlphabet: bimapFromSlice(figure),
+	}
+
+	return ITA
+}
+
+func NewITA2MSB() ITA2 {
 	letter := []byte{
 		'\x00', // NULL
 		'E',

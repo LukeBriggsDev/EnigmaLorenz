@@ -2,6 +2,7 @@
 package enigma
 
 import (
+	"EnigmaLorenz/pkg/util"
 	"errors"
 	"log"
 )
@@ -14,11 +15,6 @@ func indexOf(needle byte, haystack []byte) (byte, error) {
 		}
 	}
 	return 0, errors.New("item not found in list")
-}
-
-// negMod is a helper function to have a mod n produce a positive result even if a is negative.
-func negMod(a int, n int) int {
-	return (a%n + n) % n
 }
 
 // A Rotor contains all the information necessary to translate an input connection to an output connection.
@@ -84,7 +80,7 @@ func (r *Rotor) GetRingSetting() byte {
 }
 
 func (r *Rotor) normalizedPos() byte {
-	return byte(negMod(int(r.shownPos)-int(r.ringSetting), len(r.Wires)))
+	return byte(util.NegMod(int(r.shownPos)-int(r.ringSetting), len(r.Wires)))
 }
 
 // AtNotch will return whether the rotor is currently in the position where its notch aligns with the pawl.
@@ -103,7 +99,7 @@ func (r *Rotor) Rotate() {
 func (r Rotor) Translate(plain byte) byte {
 
 	shiftedPlain := (plain + r.normalizedPos()) % byte(len(r.Wires)) // Shift by rotor and ring position.
-	shiftedCipher := negMod(int(r.Wires[shiftedPlain])-int(r.normalizedPos()), len(r.Wires))
+	shiftedCipher := util.NegMod(int(r.Wires[shiftedPlain])-int(r.normalizedPos()), len(r.Wires))
 	return byte(shiftedCipher)
 }
 
@@ -111,7 +107,7 @@ func (r Rotor) Translate(plain byte) byte {
 func (r Rotor) TranslateReverse(cipher byte) byte {
 	unshiftedCipher := (cipher + r.normalizedPos()) % byte(len(r.Wires))
 	unshiftedPlain, _ := indexOf(unshiftedCipher, r.Wires)
-	shiftedPlain := negMod(int(unshiftedPlain)-int(r.normalizedPos()), len(r.Wires))
+	shiftedPlain := util.NegMod(int(unshiftedPlain)-int(r.normalizedPos()), len(r.Wires))
 	return byte(shiftedPlain)
 }
 
