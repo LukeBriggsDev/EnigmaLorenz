@@ -42,13 +42,13 @@ func NewITA2LSB() ITA2 {
 	letter := []byte{
 		'\x00', // NULL
 		'T',
-		'\x0D', // CR
+		'\x0A', // CR
 		'O',
 		' ',
 		'H',
 		'N',
 		'M',
-		'\x0A', // LF
+		'\x0D', // LF
 		'L',
 		'R',
 		'G',
@@ -77,13 +77,13 @@ func NewITA2LSB() ITA2 {
 	figure := []byte{
 		'\x00', // NULL
 		'5',
-		'\x0D', // LF
+		'\x0A', // LF
 		'9',
 		' ',
 		'£',
 		',',
 		'.',
-		'\x0A', // CR
+		'\x0D', // CR
 		')',
 		'4',
 		'&',
@@ -93,11 +93,11 @@ func NewITA2LSB() ITA2 {
 		'=',
 		'3',
 		'+',
-		'\x05', // Enquiry
+		'#', // Enquiry
 		'?',
 		'\'',
 		'6',
-		'!',
+		'%',
 		'/',
 		'-',
 		'2',
@@ -106,85 +106,6 @@ func NewITA2LSB() ITA2 {
 		'7',
 		'1',
 		'(',
-		'\x1F', // Shift Out
-	}
-
-	ITA := ITA2{
-		letterAlphabet: bimapFromSlice(letter),
-		figureAlphabet: bimapFromSlice(figure),
-	}
-
-	return ITA
-}
-
-func NewITA2MSB() ITA2 {
-	letter := []byte{
-		'\x00', // NULL
-		'E',
-		'\x0A', // LF
-		'A',
-		' ',
-		'S',
-		'I',
-		'U',
-		'\x0D', // CR
-		'D',
-		'R',
-		'J',
-		'N',
-		'F',
-		'C',
-		'K',
-		'T',
-		'Z',
-		'L',
-		'W',
-		'H',
-		'Y',
-		'P',
-		'Q',
-		'O',
-		'B',
-		'G',
-		'\x1B', // Shift In
-		'M',
-		'X',
-		'V',
-		'\x1F', // Shift Out
-	}
-
-	figure := []byte{
-		'\x00', // NULL
-		'3',
-		'\x0A', // LF
-		'-',
-		' ',
-		'\'',
-		'8',
-		'7',
-		'\x0D', // CR
-		'\x05', // Enquiry
-		'4',
-		'\x07', // Bell
-		',',
-		'!',
-		':',
-		'(',
-		'5',
-		'+',
-		')',
-		'2',
-		'$',
-		'6',
-		'0',
-		'1',
-		'9',
-		'?',
-		'&',
-		'\x1B', // Shift In
-		'.',
-		'/',
-		';',
 		'\x1F', // Shift Out
 	}
 
@@ -234,19 +155,19 @@ func (alphabet *ITA2) ITA2ToAscii(b []byte) (string, error) {
 			continue
 		}
 
+		var plain byte
+		var plainExist bool
+
 		if inLetterShift {
-			letter, letterExists := alphabet.letterAlphabet.GetASCII(char)
-			if !letterExists {
-				return "", errors.New("incorrect character sequence")
-			}
-			decoded += string(letter)
+			plain, plainExist = alphabet.letterAlphabet.GetASCII(char)
 		} else {
-			figure, figureExists := alphabet.figureAlphabet.GetASCII(char)
-			if !figureExists {
-				return "", errors.New("incorrect character sequence")
-			}
-			decoded += string(figure)
+			plain, plainExist = alphabet.figureAlphabet.GetASCII(char)
 		}
+
+		if !plainExist {
+			return "", errors.New("incorrect character sequence")
+		}
+		decoded += string(plain)
 
 	}
 

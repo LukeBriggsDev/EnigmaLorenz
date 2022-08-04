@@ -2,25 +2,37 @@ package test
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 )
 import "EnigmaLorenz/pkg/lorenz"
 
 func TestAsciiToITA2(t *testing.T) {
-	alphabet := lorenz.NewITA2MSB()
+	alphabet := lorenz.NewITA2LSB()
 	ita, _ := alphabet.AsciiToITA2("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789A1B2C3")
-	expected := []byte{3, 25, 14, 9, 1, 13, 26, 20, 6, 11, 15, 18, 28, 12, 24, 22, 23, 10, 5, 16, 7, 30, 19, 29, 21, 17, 27, 22, 23, 19, 1, 10, 16, 21, 7, 6, 24, 31, 3, 27, 23, 31, 25, 27, 19, 31, 14, 27, 1}
+	expected := []byte{0x18, 0x13, 0x0e, 0x12, 0x10, 0x16, 0x0b, 0x05, 0x0c, 0x1a, 0x1e, 0x09, 0x07, 0x06, 0x03, 0x0d, 0x1d, 0x0a, 0x14, 0x01, 0x1c, 0x0f, 0x19, 0x17, 0x15, 0x11, 0x1b, 0x0d, 0x1d, 0x19, 0x10, 0x0a, 0x01, 0x15, 0x1c, 0x0c, 0x03, 0x1f, 0x18, 0x1b, 0x1d, 0x1f, 0x13, 0x1b, 0x19, 0x1f, 0x0e, 0x1b, 0x10}
 	if bytes.Compare(ita, expected) != 0 {
-		t.Errorf("%s != %s", ita, expected)
+		fmt.Printf("%x\n", ita)
+		t.Errorf("%x != %s", ita, expected)
 	}
 }
 
 func TestITA2ToAscii(t *testing.T) {
 	alphabet := lorenz.NewITA2LSB()
-	byteSequence := []byte{3, 25, 14, 9, 1, 13, 26, 20, 6, 11, 15, 18, 28, 12, 24, 22, 23, 10, 5, 16, 7, 30, 19, 29, 21, 17, 27, 22, 23, 19, 1, 10, 16, 21, 7, 6, 24, 31, 3, 27, 23, 31, 25, 27, 19, 31, 14, 27, 1}
+	byteSequence := []byte{0x18, 0x13, 0x0e, 0x12, 0x10, 0x16, 0x0b, 0x05, 0x0c, 0x1a, 0x1e, 0x09, 0x07, 0x06, 0x03, 0x0d, 0x1d, 0x0a, 0x14, 0x01, 0x1c, 0x0f, 0x19, 0x17, 0x15, 0x11, 0x1b, 0x0d, 0x1d, 0x19, 0x10, 0x0a, 0x01, 0x15, 0x1c, 0x0c, 0x03, 0x1f, 0x18, 0x1b, 0x1d, 0x1f, 0x13, 0x1b, 0x19, 0x1f, 0x0e, 0x1b, 0x10}
 	str, _ := alphabet.ITA2ToAscii(byteSequence)
 	expected := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789A1B2C3"
 	if str != expected {
 		t.Errorf("%s != %s", str, expected)
+	}
+}
+
+func TestReverse(t *testing.T) {
+	alphabet := lorenz.NewITA2LSB()
+	start := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789A1B2C3"
+	ita, _ := alphabet.AsciiToITA2(start)
+	str, _ := alphabet.ITA2ToAscii(ita)
+	if str != start {
+		t.Errorf("%s != %s", start, str)
 	}
 }
