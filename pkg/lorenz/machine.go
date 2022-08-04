@@ -48,6 +48,36 @@ func NewLorenz(chiWheels [5]Wheel, motorWheels [2]Wheel, psiWheels [5]Wheel) Lor
 	}
 }
 
+func (m *Lorenz) ResetRotorPos() {
+	for i := 0; i < len(m.chiWheels); i++ {
+		m.chiWheels[i].pos = 0
+	}
+	for i := 0; i < len(m.psiWheels); i++ {
+		m.psiWheels[i].pos = 0
+	}
+	for i := 0; i < len(m.motorWheels); i++ {
+		m.motorWheels[i].pos = 0
+	}
+}
+
+func (m *Lorenz) SetChiPos(positions []byte) {
+	for i := 0; i < len(m.chiWheels); i++ {
+		m.chiWheels[i].pos = positions[i]
+	}
+}
+
+func (m *Lorenz) SetPsiPos(positions []byte) {
+	for i := 0; i < len(m.psiWheels); i++ {
+		m.psiWheels[i].pos = positions[i]
+	}
+}
+
+func (m *Lorenz) SetMotorPos(positions []byte) {
+	for i := 0; i < len(m.motorWheels); i++ {
+		m.motorWheels[i].pos = positions[i]
+	}
+}
+
 func (m *Lorenz) Encrypt(plain []byte) []byte {
 	ciphertext := []byte{}
 
@@ -78,18 +108,6 @@ func (m *Lorenz) Encrypt(plain []byte) []byte {
 
 	}
 	return ciphertext
-}
-
-func (m *Lorenz) ResetRotorPos() {
-	for i := 0; i < len(m.chiWheels); i++ {
-		m.chiWheels[i].pos = 0
-	}
-	for i := 0; i < len(m.psiWheels); i++ {
-		m.psiWheels[i].pos = 0
-	}
-	for i := 0; i < len(m.motorWheels); i++ {
-		m.motorWheels[i].pos = 0
-	}
 }
 
 func WheelsToByte(w []Wheel) byte {
