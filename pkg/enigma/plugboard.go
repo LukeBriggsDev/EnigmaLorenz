@@ -1,6 +1,9 @@
 package enigma
 
-import "log"
+import (
+	"EnigmaLorenz/pkg/util"
+	"log"
+)
 
 // A Plugboard contains the state of all the mapping between letters.
 type Plugboard struct {
@@ -19,11 +22,21 @@ func NewPlugboard() Plugboard {
 // Errors
 //
 // letter 1 and letter 2 must be ASCII characters between A(65) - Z(90).
-// A fatal error will occur if the characters are invalid.
+// A fatal error will occur if the characters are invalid or a mapping already exists for one of the characters.
 func (p *Plugboard) AddPlug(letter1 byte, letter2 byte) {
-	if !(validChars(string(letter1)) && validChars(string(letter2))) {
+	if !(util.ValidChars(string(letter1)) && util.ValidChars(string(letter2))) {
 		log.Fatal("Invalid characters given to plugboard, must be A-Z")
 	}
+	_, Ok := p.state[letter1]
+	if Ok {
+		log.Fatalf("Mapping already exists for character %c", letter1)
+	}
+
+	_, Ok = p.state[letter2]
+	if Ok {
+		log.Fatalf("Mapping already exists for character %c", letter2)
+	}
+
 	p.state[letter1] = letter2
 	p.state[letter2] = letter1
 }
