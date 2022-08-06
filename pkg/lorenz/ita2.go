@@ -23,11 +23,13 @@ func (m *bimap) Add(k byte, v byte) {
 	m.reverseMap[v] = k
 }
 
+// GetITA2Code returns the corresponding ITA2 character for an ASCII character.
 func (m *bimap) GetITA2Code(k byte) (byte, bool) {
 	v, Ok := m.reverseMap[k]
 	return v, Ok
 }
 
+// GetASCII returns the corresponding ASCII character for an ITA2 character.
 func (m *bimap) GetASCII(k byte) (byte, bool) {
 	v, Ok := m.forwardMap[k]
 	return v, Ok
@@ -38,6 +40,7 @@ type ITA2 struct {
 	figureAlphabet bimap
 }
 
+// NewITA2LSB creates an ITA2 struct with the corresponding ITA2 alphabets with the least significant bit on the left.
 func NewITA2LSB() ITA2 {
 	letter := []byte{
 		'\x00', // NULL
@@ -117,6 +120,11 @@ func NewITA2LSB() ITA2 {
 	return ITA
 }
 
+// AsciiToITA2 takes a string s and returns a slice of the translated ITA2 bytes along with an error
+//
+// Errors
+//
+// An error will be returned if one of the characters in the string does not appear in the ITA2 alphabet.
 func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
 	encoded := []byte{}
 	inLetterShift := true
@@ -143,6 +151,12 @@ func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
 	return encoded, nil
 }
 
+// ITA2ToAscii takes a slice of ITA2 bytes and returns a string of ASCII characters along with an error.
+//
+// Errors
+//
+// An error will be returned if there is no corresponding ASCII character for the ITA2 byte
+//
 func (alphabet *ITA2) ITA2ToAscii(b []byte) (string, error) {
 	decoded := ""
 	inLetterShift := true
