@@ -48,6 +48,7 @@ func NewLorenz(chiWheels [5]Wheel, motorWheels [2]Wheel, psiWheels [5]Wheel) Lor
 	}
 }
 
+// ResetRotorPos sets the rotor positions of all the machine's rotors to 0.
 func (m *Lorenz) ResetRotorPos() {
 	for i := 0; i < len(m.chiWheels); i++ {
 		m.chiWheels[i].pos = 0
@@ -60,24 +61,28 @@ func (m *Lorenz) ResetRotorPos() {
 	}
 }
 
-func (m *Lorenz) SetChiPos(positions []byte) {
+// SetChiPos takes an array of 5 rotor positions and sets the corresponding Chi rotors to them.
+func (m *Lorenz) SetChiPos(positions [5]byte) {
 	for i := 0; i < len(m.chiWheels); i++ {
 		m.chiWheels[i].pos = positions[i]
 	}
 }
 
-func (m *Lorenz) SetPsiPos(positions []byte) {
+// SetPsiPos takes an array of 5 rotor positions and sets the corresponding Psi rotors to them.
+func (m *Lorenz) SetPsiPos(positions [5]byte) {
 	for i := 0; i < len(m.psiWheels); i++ {
 		m.psiWheels[i].pos = positions[i]
 	}
 }
 
-func (m *Lorenz) SetMotorPos(positions []byte) {
+// SetMotorPos takes an array of 2 rotor positions and sets the corresponding Motor rotors to them.
+func (m *Lorenz) SetMotorPos(positions [2]byte) {
 	for i := 0; i < len(m.motorWheels); i++ {
 		m.motorWheels[i].pos = positions[i]
 	}
 }
 
+// Encrypt takes a slice of bytes and returns the result of them passing through the Lorenz machine.
 func (m *Lorenz) Encrypt(plain []byte) []byte {
 	ciphertext := []byte{}
 
@@ -110,6 +115,7 @@ func (m *Lorenz) Encrypt(plain []byte) []byte {
 	return ciphertext
 }
 
+// WheelsToByte takes a list of wheels and uses the current pin to create a byte with each bit mapping to each pin.
 func WheelsToByte(w []Wheel) byte {
 	result := byte(0)
 	for i := 0; i < len(w); i++ {
@@ -127,55 +133,55 @@ type WheelSet struct {
 func NewWheelSet() WheelSet {
 	return WheelSet{
 		[5]Wheel{
-			Wheel{
+			{
 				pins: []bool{false, true, true, false, true, true, false, false, false, true, true, false, true, true, false, false, true, false, false, false, false, true, true, true, false, false, true, true, true, false, false, false, false, true, true, true, false, false, true, true, false},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{true, true, false, true, true, false, false, false, false, true, true, true, false, true, true, true, true, false, true, false, false, false, true, true, false, false, true, true, false, false, false},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{false, false, true, false, false, true, true, false, false, false, true, true, false, false, false, true, true, true, false, false, false, true, true, false, true, true, true, true, false},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{true, false, true, false, true, false, false, true, true, false, false, false, true, true, false, false, true, false, true, true, true, false, false, true, false, true},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{false, true, false, false, true, true, true, true, false, false, false, true, false, true, true, true, false, false, false, false, true, false, true},
 				pos:  0,
 			},
 		},
 		[2]Wheel{
-			Wheel{
+			{
 				pins: []bool{true, false, true, true, false, true, false, true, true, true, false, true, true, true, false, true, false, true, false, true, true, true, false, true, true, false, true, true, false, true, true, false, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, false, true, false, true, true, true, true, false, true, false, true, false, true},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{false, true, false, true, false, true, true, false, true, false, true, true, false, true, true, true, false, true, true, true, false, true, true, false, true, false, true, true, true, false, true, true, true, false, true, true, true},
 				pos:  0,
 			},
 		},
 		[5]Wheel{
-			Wheel{
+			{
 				pins: []bool{true, true, false, true, false, false, true, true, false, false, false, true, true, true, false, false, true, true, false, false, false, true, true, false, false, false, true, true, true, true, false, false, true, true, true, false, false, true, true, true, false, false, false},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{false, false, false, true, false, false, false, true, true, true, false, false, true, true, false, false, true, true, true, false, false, false, true, true, true, true, false, false, false, true, true, false, false, true, true, true, false, false, true, true, true, false, false, true, false, true, true},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{false, true, false, false, true, true, false, false, true, true, true, false, false, true, true, true, false, false, true, false, false, false, true, true, true, true, false, false, false, true, false, false, false, true, true, true, false, false, false, true, true, false, false, false, true, true, false, false, true, true, true},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{false, false, true, true, true, false, false, true, true, false, false, true, true, true, false, false, true, true, true, true, false, false, false, true, false, false, false, true, true, false, false, true, true, true, false, false, true, false, false, true, true, false, false, false, true, true, false, false, true, true, true, false, true},
 				pos:  0,
 			},
-			Wheel{
+			{
 				pins: []bool{true, false, false, true, true, true, false, false, false, true, false, false, false, true, true, true, true, false, false, true, true, true, false, false, true, false, false, true, true, true, true, false, false, false, true, true, false, false, true, true, true, false, false, true, true, false, false, true, true, true, false, false, true, false, false, false, true, true, false},
 				pos:  0,
 			},
