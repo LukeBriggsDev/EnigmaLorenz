@@ -24,7 +24,7 @@ func NewPlugboard() Plugboard {
 // letter 1 and letter 2 must be ASCII characters between A(65) - Z(90).
 // A fatal error will occur if the characters are invalid or a mapping already exists for one of the characters.
 func (p *Plugboard) AddPlug(letter1 byte, letter2 byte) {
-	if !(util.ValidChars(string(letter1)) && util.ValidChars(string(letter2))) {
+	if !(util.ValidChars(string(letter1), false) && util.ValidChars(string(letter2), false)) {
 		log.Fatal("Invalid characters given to plugboard, must be A-Z")
 	}
 	_, Ok := p.state[letter1]

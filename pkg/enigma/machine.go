@@ -23,7 +23,7 @@ type Enigma struct {
 //
 // If the encryption cannot complete due to invalid characters then a non-fatal error is returned.
 func (machine *Enigma) Encrypt(plaintext string, useFourthRotor bool) (string, error) {
-	if !util.ValidChars(plaintext) {
+	if !util.ValidChars(plaintext, false) {
 		return "", errors.New("enigma input must be capitalized ascii letters only")
 	}
 

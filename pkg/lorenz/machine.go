@@ -1,6 +1,9 @@
 package lorenz
 
-import "EnigmaLorenz/pkg/util"
+import (
+	"EnigmaLorenz/pkg/util"
+	"log"
+)
 
 func boolToByte(b bool) byte {
 	if b {
@@ -24,6 +27,13 @@ func NewWheel(pins []bool, pos byte) Wheel {
 
 func (w *Wheel) rotate() {
 	w.pos = byte(util.NegMod(int(w.pos)-1, len(w.pins)))
+}
+
+func (w *Wheel) SetPos(pos byte) {
+	if pos < 0 || int(pos) >= len(w.pins) {
+		log.Fatalf("Invalid rotor position given")
+	}
+	w.pos = pos
 }
 
 func (w *Wheel) getCurrentPin() bool {
@@ -64,21 +74,21 @@ func (m *Lorenz) ResetRotorPos() {
 // SetChiPos takes an array of 5 rotor positions and sets the corresponding Chi rotors to them.
 func (m *Lorenz) SetChiPos(positions [5]byte) {
 	for i := 0; i < len(m.chiWheels); i++ {
-		m.chiWheels[i].pos = positions[i]
+		m.chiWheels[i].SetPos(positions[i])
 	}
 }
 
 // SetPsiPos takes an array of 5 rotor positions and sets the corresponding Psi rotors to them.
 func (m *Lorenz) SetPsiPos(positions [5]byte) {
 	for i := 0; i < len(m.psiWheels); i++ {
-		m.psiWheels[i].pos = positions[i]
+		m.psiWheels[i].SetPos(positions[i])
 	}
 }
 
 // SetMotorPos takes an array of 2 rotor positions and sets the corresponding Motor rotors to them.
 func (m *Lorenz) SetMotorPos(positions [2]byte) {
 	for i := 0; i < len(m.motorWheels); i++ {
-		m.motorWheels[i].pos = positions[i]
+		m.motorWheels[i].SetPos(positions[i])
 	}
 }
 

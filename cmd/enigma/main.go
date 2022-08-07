@@ -132,7 +132,7 @@ func validatePlugboardInput(input string) (enigma.Plugboard, error) {
 			return plugboard, errors.New("incorrect format for plugboard")
 		}
 
-		if !util.ValidChars(strings.ToUpper(split[0])) || !util.ValidChars(strings.ToUpper(split[1])) {
+		if !util.ValidChars(strings.ToUpper(split[0]), false) || !util.ValidChars(strings.ToUpper(split[1]), false) {
 			return plugboard, errors.New("incorrect characters passed to plugboard")
 		}
 
@@ -210,7 +210,7 @@ func main() {
 
 	message := strings.Replace(strings.ToUpper(*messagePtr), " ", "", -1)
 
-	if !util.ValidChars(message) {
+	if !util.ValidChars(message, false) {
 		_, _ = fmt.Fprintf(os.Stderr, "Invalid characters in message: %s", message)
 	}
 

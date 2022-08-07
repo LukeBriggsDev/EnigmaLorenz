@@ -2,6 +2,7 @@ package test
 
 import (
 	"EnigmaLorenz/pkg/lorenz"
+	"fmt"
 	"testing"
 )
 
@@ -35,13 +36,16 @@ func TestLorenzEncrypt(t *testing.T) {
 		wheels.Psi,
 	)
 	alphabet := lorenz.NewITA2LSB()
-	plaintext := "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890A1B2C3"
-	encoded, _ := alphabet.AsciiToITA2(plaintext)
+	plaintext := "THE RAIN IN SPAIN FALLS MAINLY ON THE PLANE 27 CRABS LOVE 9 SEAGULLS"
+	encoded, _ := alphabet.AsciiToITA2(plaintext, false)
 	encrypted := machine.Encrypt(encoded)
+	decoded, _ := alphabet.ITA2ToAscii(encrypted, false)
+	fmt.Printf("%s\n", decoded)
 	machine.ResetRotorPos()
-	decrypted := machine.Encrypt(encrypted)
-	decoded, _ := alphabet.ITA2ToAscii(decrypted)
+	encoded, _ = alphabet.AsciiToITA2(decoded, true)
+	decrypted := machine.Encrypt(encoded)
+	decoded, _ = alphabet.ITA2ToAscii(decrypted, true)
 	if plaintext != decoded {
-		t.Errorf("%s != %s", plaintext, decrypted)
+		t.Errorf("%s != %s", plaintext, decoded)
 	}
 }

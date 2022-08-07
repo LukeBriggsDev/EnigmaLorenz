@@ -45,15 +45,15 @@ type ITA2 struct {
 // NewITA2LSB creates an ITA2 struct with the corresponding ITA2 alphabets with the least significant bit on the left.
 func NewITA2LSB() ITA2 {
 	letter := []byte{
-		'\\', // NULL
+		'±', // NULL
 		'T',
-		'|', // CR
+		'_', // CR
 		'O',
 		' ',
 		'H',
 		'N',
 		'M',
-		'=', // LF
+		'|', // LF
 		'L',
 		'R',
 		'G',
@@ -80,15 +80,15 @@ func NewITA2LSB() ITA2 {
 	}
 
 	figure := []byte{
-		'\\', // NULL
+		'±', // NULL
 		'5',
 		'|', // LF
 		'9',
-		' ',
+		'!',
 		'£',
 		',',
 		'.',
-		'=', // CR
+		'_', // CR
 		')',
 		'4',
 		'&',
@@ -129,7 +129,7 @@ func NewITA2LSB() ITA2 {
 // Errors
 //
 // An error will be returned if one of the characters in the string does not appear in the ITA2 alphabet.
-func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
+func (alphabet *ITA2) AsciiToITA2(s string, decrypt bool) ([]byte, error) {
 	encoded := []byte{}
 	inLetterShift := true
 	for _, char := range s {
@@ -139,14 +139,14 @@ func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
 			if !figureExists {
 				return []byte(""), errors.New("invalid characters in input string")
 			}
-			if inLetterShift {
+			if inLetterShift && !decrypt {
 				itaFig, _ := alphabet.letterAlphabet.GetITA2Code(alphabet.figShift)
 				encoded = append(encoded, itaFig)
 				inLetterShift = !inLetterShift
 			}
 			encoded = append(encoded, figure)
 		} else {
-			if !inLetterShift {
+			if !inLetterShift && !decrypt {
 				itaLet, _ := alphabet.letterAlphabet.GetITA2Code(alphabet.letShift)
 				encoded = append(encoded, itaLet)
 				inLetterShift = !inLetterShift
@@ -163,7 +163,7 @@ func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
 //
 // An error will be returned if there is no corresponding ASCII character for the ITA2 byte
 //
-func (alphabet *ITA2) ITA2ToAscii(b []byte) (string, error) {
+func (alphabet *ITA2) ITA2ToAscii(b []byte, decrypt bool) (string, error) {
 	decoded := ""
 	inLetterShift := true
 	for _, char := range b {
@@ -171,10 +171,15 @@ func (alphabet *ITA2) ITA2ToAscii(b []byte) (string, error) {
 		letShiftByte, _ := alphabet.letterAlphabet.GetITA2Code(alphabet.letShift)
 		if char == figShiftByte {
 			inLetterShift = false
-			continue
+			if decrypt {
+				continue
+			}
+
 		} else if char == letShiftByte {
 			inLetterShift = true
-			continue
+			if decrypt {
+				continue
+			}
 		}
 
 		var plain byte
