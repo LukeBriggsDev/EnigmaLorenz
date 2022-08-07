@@ -38,20 +38,22 @@ func (m *bimap) GetASCII(k byte) (byte, bool) {
 type ITA2 struct {
 	letterAlphabet bimap
 	figureAlphabet bimap
+	figShift       byte
+	letShift       byte
 }
 
 // NewITA2LSB creates an ITA2 struct with the corresponding ITA2 alphabets with the least significant bit on the left.
 func NewITA2LSB() ITA2 {
 	letter := []byte{
-		'\x00', // NULL
+		'\\', // NULL
 		'T',
-		'\x0A', // CR
+		'|', // CR
 		'O',
 		' ',
 		'H',
 		'N',
 		'M',
-		'\x0D', // LF
+		'=', // LF
 		'L',
 		'R',
 		'G',
@@ -70,23 +72,23 @@ func NewITA2LSB() ITA2 {
 		'A',
 		'W',
 		'J',
-		'\x1B', // Shift In
+		'^', // Shift In
 		'U',
 		'Q',
 		'K',
-		'\x1F', // Shift Out
+		'*', // Shift Out
 	}
 
 	figure := []byte{
-		'\x00', // NULL
+		'\\', // NULL
 		'5',
-		'\x0A', // LF
+		'|', // LF
 		'9',
 		' ',
 		'£',
 		',',
 		'.',
-		'\x0D', // CR
+		'=', // CR
 		')',
 		'4',
 		'&',
@@ -104,17 +106,19 @@ func NewITA2LSB() ITA2 {
 		'/',
 		'-',
 		'2',
-		'\x07', // Bell
-		'\x1B', // Shift In
+		'$', // Bell
+		'^', // Shift In
 		'7',
 		'1',
 		'(',
-		'\x1F', // Shift Out
+		'*', // Shift Out
 	}
 
 	ITA := ITA2{
 		letterAlphabet: bimapFromSlice(letter),
 		figureAlphabet: bimapFromSlice(figure),
+		figShift:       '^',
+		letShift:       '*',
 	}
 
 	return ITA
@@ -136,13 +140,15 @@ func (alphabet *ITA2) AsciiToITA2(s string) ([]byte, error) {
 				return []byte(""), errors.New("invalid characters in input string")
 			}
 			if inLetterShift {
-				encoded = append(encoded, 0x1B)
+				itaFig, _ := alphabet.letterAlphabet.GetITA2Code(alphabet.figShift)
+				encoded = append(encoded, itaFig)
 				inLetterShift = !inLetterShift
 			}
 			encoded = append(encoded, figure)
 		} else {
 			if !inLetterShift {
-				encoded = append(encoded, 0x1F)
+				itaLet, _ := alphabet.letterAlphabet.GetITA2Code(alphabet.letShift)
+				encoded = append(encoded, itaLet)
 				inLetterShift = !inLetterShift
 			}
 			encoded = append(encoded, letter)
@@ -161,10 +167,12 @@ func (alphabet *ITA2) ITA2ToAscii(b []byte) (string, error) {
 	decoded := ""
 	inLetterShift := true
 	for _, char := range b {
-		if char == 0x1B {
+		figShiftByte, _ := alphabet.letterAlphabet.GetITA2Code(alphabet.figShift)
+		letShiftByte, _ := alphabet.letterAlphabet.GetITA2Code(alphabet.letShift)
+		if char == figShiftByte {
 			inLetterShift = false
 			continue
-		} else if char == 0x1F {
+		} else if char == letShiftByte {
 			inLetterShift = true
 			continue
 		}
