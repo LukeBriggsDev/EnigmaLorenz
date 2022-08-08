@@ -71,7 +71,7 @@ func main() {
 	messagePtr := flag.String("m", "", "The message to be encrypted/decrypted")
 	chiPositionsPtr := flag.String("chi", "0 0 0 0 0", "The rotor setting for the Chi wheels (0-max)")
 	mPositionsPtr := flag.String("mot", "0 0", "The rotor setting for the Motor wheels (0-max)")
-	psiPositionsPtr := flag.String("Psi", "0 0 0 0 0", "The rotor setting for the Psi wheels")
+	psiPositionsPtr := flag.String("psi", "0 0 0 0 0", "The rotor setting for the Psi wheels")
 	decryptPtr := flag.Bool("d", false, "Whether you are seeking to decrypt a message (0-max)")
 
 	flag.Parse()
