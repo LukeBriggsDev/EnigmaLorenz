@@ -1,6 +1,9 @@
 # Enigma and Lorenz
 This is a collection of utilities for encrypting messages using virtual Enigma and Lorenz machines.
 
+## Binaries
+Pre-built binaries for Windows, Linux, and MacOS (ARM) are available in the `out` folder (64 bit only).
+
 ## Enigma
 
 To get a list of possible commands run `enigma` with a `-h` flag:
