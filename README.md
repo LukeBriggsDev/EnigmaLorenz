@@ -3,6 +3,14 @@ This is a collection of utilities for encrypting messages using virtual Enigma a
 
 ## Binaries
 Pre-built binaries for Windows, Linux, and MacOS (ARM) are available in the `out` folder (64 bit only).
+The are standalone, compiled binaries and so do not need Go installed to run.
+
+## Building From Source
+Binary files can also be built from source if you have [Go installed](https://go.dev/doc/install).
+To compile them, navigate to the directory this README is in and run the commands:
+
+`go build -o enigma EnigmaLorenz/cmd/enigma`
+`go build -o lorenz EnigmaLorenz/cmd/lorenz`
 
 ## Enigma
 
