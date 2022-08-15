@@ -3,7 +3,7 @@ This is a collection of utilities for encrypting messages using virtual Enigma a
 
 ## Binaries
 Pre-built binaries for Windows, Linux, and MacOS (ARM) are available in the `out` folder (64 bit only).
-The are standalone, compiled binaries and so do not need Go installed to run.
+They are standalone, compiled binaries and so do not need Go installed to run.
 
 ## Building From Source
 Binary files can also be built from source if you have [Go installed](https://go.dev/doc/install).
