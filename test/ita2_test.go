@@ -29,9 +29,9 @@ func TestITA2ToAscii(t *testing.T) {
 
 func TestReverse(t *testing.T) {
 	alphabet := lorenz.NewITA2LSB()
-	start := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789A1B2C3"
+	start := "*OKVIL"
 	ita, _ := alphabet.AsciiToITA2(start, false)
-	str, _ := alphabet.ITA2ToAscii(ita, true)
+	str, _ := alphabet.ITA2ToAscii(ita, false)
 	if str != start {
 		t.Errorf("%s != %s", start, str)
 	}

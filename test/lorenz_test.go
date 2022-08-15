@@ -36,13 +36,15 @@ func TestLorenzEncrypt(t *testing.T) {
 		wheels.Psi,
 	)
 	alphabet := lorenz.NewITA2LSB()
-	plaintext := "THE RAIN IN SPAIN FALLS MAINLY ON THE PLANE 27 CRABS LOVE 9 SEAGULLS"
+	plaintext := "N 5 WIL"
 	encoded, _ := alphabet.AsciiToITA2(plaintext, false)
 	encrypted := machine.Encrypt(encoded)
+	fmt.Printf("%X\n", encrypted)
 	decoded, _ := alphabet.ITA2ToAscii(encrypted, false)
 	fmt.Printf("%s\n", decoded)
 	machine.ResetRotorPos()
 	encoded, _ = alphabet.AsciiToITA2(decoded, true)
+	fmt.Printf("%X\n", encoded)
 	decrypted := machine.Encrypt(encoded)
 	decoded, _ = alphabet.ITA2ToAscii(decrypted, true)
 	if plaintext != decoded {

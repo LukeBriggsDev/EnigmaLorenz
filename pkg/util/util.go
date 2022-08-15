@@ -21,7 +21,7 @@ func strContains(needle rune, haystack string) bool {
 // ValidChars takes a string and returns whether the string only contains ASCII characters in the range A-Z.
 // allowNum also allows numbers 0-9 to be valid
 func ValidChars(text string, lorenzMode bool) bool {
-	special := "(%/-'+\"\\:&)_ £,.0123456789^|=#$*@-<>[]?;{}±"
+	special := "(%/-'+\"\\:&)_ £,.0123456789^|=#$*@-<!>[]?;{}±"
 	for _, chr := range text {
 		if chr < 'A' || chr > 'Z' {
 			if !lorenzMode {

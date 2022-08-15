@@ -98,7 +98,7 @@ func (m *Lorenz) Encrypt(plain []byte) []byte {
 
 	for _, char := range plain {
 		key := byte(0)
-		// Apply  wheels
+		// Apply wheels
 		key = WheelsToByte(m.chiWheels[:])
 		psi := WheelsToByte(m.psiWheels[:])
 		key = key ^ psi
