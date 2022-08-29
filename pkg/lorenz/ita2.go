@@ -126,7 +126,7 @@ func NewITA2LSB() ITA2 {
 
 // AsciiToITA2 takes a string s and returns a slice of the translated ITA2 bytes along with an error
 //
-// Errors
+// # Errors
 //
 // An error will be returned if one of the characters in the string does not appear in the ITA2 alphabet.
 func (alphabet *ITA2) AsciiToITA2(s string, decrypt bool) ([]byte, error) {
@@ -159,10 +159,9 @@ func (alphabet *ITA2) AsciiToITA2(s string, decrypt bool) ([]byte, error) {
 
 // ITA2ToAscii takes a slice of ITA2 bytes and returns a string of ASCII characters along with an error.
 //
-// Errors
+// # Errors
 //
 // An error will be returned if there is no corresponding ASCII character for the ITA2 byte
-//
 func (alphabet *ITA2) ITA2ToAscii(b []byte, decrypt bool) (string, error) {
 	decoded := ""
 	inLetterShift := true

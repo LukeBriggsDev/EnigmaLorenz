@@ -19,7 +19,7 @@ func NewPlugboard() Plugboard {
 
 // AddPlug creates a connection between the two characters given to it.
 //
-// Errors
+// # Errors
 //
 // letter 1 and letter 2 must be ASCII characters between A(65) - Z(90).
 // A fatal error will occur if the characters are invalid or a mapping already exists for one of the characters.

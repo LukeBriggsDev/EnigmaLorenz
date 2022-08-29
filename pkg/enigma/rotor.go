@@ -24,8 +24,9 @@ func indexOf(needle byte, haystack []byte) (byte, error) {
 // Wires is a list of mappings of the input to the output.
 // The index of the list can be seen as the input and the value can be seen as the output.
 // e.g.
-//    | Index | 0(A)  1(B)  2(C) 3(D)  4(E) 5(F) 6(G)  7(H)  8(I)  9(J) 10(K) 11(L) 12(M) 13(N) 14(O) 15(P) 16(Q) 17(R) 18(S) 19(T) 20(U) 21(V) 22(W) 23(X) 24(Y) 25(Z)
-//    | Value | 4(E) 10(K) 12(M) 5(F) 11(L) 6(G) 3(D) 16(Q) 21(V) 25(Z) 13(N) 19(T) 14(O) 22(W) 24(Y)  7(H) 23(X) 20(U) 18(S) 15(P)  0(A)  8(I)  1(B) 17(R)  2(C)  9(J)
+//
+//	| Index | 0(A)  1(B)  2(C) 3(D)  4(E) 5(F) 6(G)  7(H)  8(I)  9(J) 10(K) 11(L) 12(M) 13(N) 14(O) 15(P) 16(Q) 17(R) 18(S) 19(T) 20(U) 21(V) 22(W) 23(X) 24(Y) 25(Z)
+//	| Value | 4(E) 10(K) 12(M) 5(F) 11(L) 6(G) 3(D) 16(Q) 21(V) 25(Z) 13(N) 19(T) 14(O) 22(W) 24(Y)  7(H) 23(X) 20(U) 18(S) 15(P)  0(A)  8(I)  1(B) 17(R)  2(C)  9(J)
 //
 // The wiring for the standard RotorSet was acquired from
 // https://www.cryptomuseum.com/crypto/enigma/m4/index.htm#Wiring
@@ -44,7 +45,7 @@ type Rotor struct {
 // SetShownPos is analogous to setting the rotor position by changing the letter/number shown in the window.
 // The position can be any number between 1 and 26 inclusively.
 //
-// Errors
+// # Errors
 //
 // A fatal error will occur if a value less than 0 or more than 26 is passed in.
 func (r *Rotor) SetShownPos(pos byte) {
@@ -64,7 +65,7 @@ func (r *Rotor) GetShownPos() byte {
 // It provides an offset between the input wiring and output wiring, achieved by rotating one side of the rotor wiring.
 // The offset can be any number between 0 and 25 inclusively.
 //
-// Errors
+// # Errors
 //
 // A fatal error will occur if a value less than 0 or greater than 25 is passed as a parameter.
 func (r *Rotor) SetRingSetting(offset byte) {
@@ -114,7 +115,7 @@ func (r Rotor) TranslateReverse(cipher byte) byte {
 // RotorSet contains all the standard rotors and reflectors that were available from Enigma 1 to M4 Enigma.
 // The rotors were gathered from [Crypto Museum]: https://www.cryptomuseum.com/crypto/enigma/m4/index.htm#wiring
 //
-// Further Notes
+// # Further Notes
 //
 // 4 rotor enigma only allowed for a specific set of rotors to be used as the 4th rotor.
 // These rotors are Beta and Gamma.

@@ -2,7 +2,7 @@
 This is a collection of utilities for encrypting messages using virtual Enigma and Lorenz machines.
 
 ## Binaries
-Pre-built binaries for Windows, Linux, and MacOS (ARM) are available in the `out` folder (64 bit only).
+Pre-built binaries for Windows, Linux, and MacOS (ARM) are available in the Releases (64 bit only).
 They are standalone, compiled binaries and so do not need Go installed to run.
 
 ## Building From Source

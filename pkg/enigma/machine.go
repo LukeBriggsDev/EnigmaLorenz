@@ -19,7 +19,7 @@ type Enigma struct {
 // Encrypt enciphers a plaintext string using the Enigma Rotor and Plugboard.
 // useForthRotor can be used to provide support for M4 Enigma.
 //
-// Errors
+// # Errors
 //
 // If the encryption cannot complete due to invalid characters then a non-fatal error is returned.
 func (machine *Enigma) Encrypt(plaintext string, useFourthRotor bool) (string, error) {
